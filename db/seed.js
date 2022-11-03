@@ -7,23 +7,13 @@ const {
   routine_activities,
 } = require("./seedData");
 
-const {
-  getRoutineById,
-  getRoutinesWithoutActivities,
-  getAllRoutines,
-  getAllPublicRoutines,
-  getAllRoutinesByUser,
-  createRoutine,
-} = require("./adapters/routines");
+const { createRoutine } = require("./adapters/routines");
 
 const { createActivity } = require("./adapters/activities");
 
-const {
-  createUser,
-  getUser,
-  getUserById,
-  getUserByUsername,
-} = require("./adapters/users");
+const { addActivityRoutine } = require("./adapters/routine_activities");
+
+const { createUser } = require("./adapters/users");
 
 async function dropTables() {
   try {
@@ -103,10 +93,10 @@ const seedDb = async () => {
     await createActivity(activity);
   }
 
-  //   console.log(`...seeding routine_activities`);
-  //   for (const routine_activity of routine_activities) {
-  //     await createRoutineActivity(routine_activity);
-  //   }
+  console.log(`...seeding routine_activities`);
+  for (const routine_activity of routine_activities) {
+    await addActivityRoutine(routine_activity);
+  }
 };
 const rebuildDb = async () => {
   client.connect();

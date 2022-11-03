@@ -7,7 +7,7 @@ async function getActivityById({ activityId }) {
     } = await client.query(
       `
     SELECT id,name,description  FROM activities 
-        WHERE id=${activityId}; 
+        WHERE id=$'{activityId}' 
     `
     );
     return activity;
@@ -20,7 +20,7 @@ async function getAllActivities() {
   try {
     const { rows } = await client.query(
       `
-       SELECT * FROM activities; 
+       SELECT * FROM activities
         `
     );
     return rows;
@@ -47,10 +47,10 @@ async function createActivity({ name, description }) {
   }
 }
 
-async function updateActivity(activityId, name, description = {}) {
-  const setString = Object.keys(name, description)
+async function updateActivity(id, fields = {}) {
+  const setString = Object.keys(fields)
     .map((key, index) => `"${key}"=$${index + 1}`)
-    .join(",");
+    .join(", ");
 
   try {
     if (setString.length > 0) {
@@ -58,12 +58,12 @@ async function updateActivity(activityId, name, description = {}) {
         rows: [activity],
       } = await client.query(
         `
-        UPDATE activity
+        UPDATE activities
         SET ${setString}
-        WHERE id=${activityId}
+        WHERE id=${id}
         RETURNING *;
         `,
-        Object.values(name, description)
+        Object.values(fields)
       );
       return activity;
     }

@@ -1,15 +1,15 @@
 const client = require("../client");
 const { routine_activities } = require("../seedData");
 
-async function getRoutineActivityById({ routineActivityId }) {
+async function getRoutineActivityById({ id }) {
   try {
     const {
       rows: [routine_activity],
     } = await client.query(
       `SELECT * FROM routine_activities
-        WHERE "routineActivityId"=$1
+        WHERE id=$1
         `,
-      [routineActivityId]
+      [id]
     );
     return routine_activity;
   } catch (error) {
@@ -18,26 +18,24 @@ async function getRoutineActivityById({ routineActivityId }) {
 }
 async function addActivityRoutine({ routineId, activityId, count, duration }) {
   try {
-    const {
-      rows: [routine_activity],
-    } = await client.query(
+    const { rows } = await client.query(
       `
-            INSERT INTO routine_activities("routineId", "activityId", count,duration),
-            VALUES ($1,$2,$3,$4)
-            RETURN *;
-            `,
-      [routineId, activityId, count, duration]
+      INSERT INTO routine_activities (duration, count, "routineId", "activityId")
+      VALUES ($1, $2, $3, $4)
+      RETURNING *
+      `,
+      [duration, count, routineId, activityId]
     );
-    return routine_activity;
+    return rows[0];
   } catch (error) {
     throw error;
   }
 }
 
-async function updateRoutineActivity({ routineActivityId, count, duration }) {
-  const setString = Object.keys(count, duration)
+async function updateRoutineActivity({ id, fields = {} }) {
+  const setString = Object.keys(fields)
     .map((key, i) => {
-      return `${key}=$${i + 2}`;
+      return `${key}=$${i + 1}`;
     })
     .join(", ");
 
@@ -46,13 +44,45 @@ async function updateRoutineActivity({ routineActivityId, count, duration }) {
       rows: [routine_activity],
     } = await client.query(
       ` UPDATE routine_activities
-        SET $(setString)
-        WHERE "routineActivityId" =$1,$2,$3
+        SET ${setString}
+        WHERE id = ${id}
         RETURNING *
         `,
-      [routineActivityId, count, duration]
+      Object.values(fields)
     );
     return routine_activity;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function destroyActivity({ routineId, activityId }) {
+  try {
+    const { rows } = await client.query(
+      `DELETE FROM routine_activities 
+      WHERE "routineId" = $1 and "activityId" = $2
+      RETURNING *
+    `,
+      [routineId, activityId]
+    );
+    return rows[0];
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function getRoutineActivitiesByRoutine({ routineId }) {
+  try {
+    const {
+      rows: [routine_activities],
+    } = await client.query(
+      `SELECT * 
+      FROM routine_activities
+      WHERE "routineId" = $1;
+      `,
+      [routineId]
+    );
+    return routine_activities;
   } catch (error) {
     throw error;
   }
@@ -62,4 +92,6 @@ module.exports = {
   getRoutineActivityById,
   addActivityRoutine,
   updateRoutineActivity,
+  destroyActivity,
+  getRoutineActivitiesByRoutine,
 };
