@@ -38,8 +38,8 @@ async function getUserById({ id }) {
     const {
       rows: [user],
     } = await client.query(`
-      SELECT id FROM users
-      WHERE userId =${id};
+      SELECT username, password FROM users
+      WHERE id =${id};
     `);
 
     console.log(user, "get user by id");

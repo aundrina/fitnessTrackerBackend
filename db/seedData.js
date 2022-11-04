@@ -53,20 +53,20 @@ const routine_activities = [
   {
     routineId: 1,
     activityId: 1,
-    duration: "30sec",
-    count: "3",
+    duration: 30,
+    count: 3,
   },
   {
     routineId: 2,
     activityId: 2,
-    duration: "30sec",
-    count: "3",
+    duration: 30,
+    count: 3,
   },
   {
     routineId: 3,
     activityId: 3,
-    duration: "30sec",
-    count: "3",
+    duration: 30,
+    count: 3,
   },
 ];
 
