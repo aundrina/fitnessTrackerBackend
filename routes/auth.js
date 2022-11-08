@@ -7,12 +7,12 @@ const {
   createUser,
 } = require("../db/adapters/users");
 const { JWT_SECRET } = require("../.env");
-const { authRequired } = require("./index");
+// const { authRequired } = require("./index");
 const SALT_ROUNDS = 10;
 
 authRouter.post("/register", async (req, res, next) => {
+  const { username, password } = req.body;
   try {
-    const { username, password } = req.body;
     const _user = await getUserByUsername(username);
     if (_user) {
       next({
@@ -26,7 +26,6 @@ authRouter.post("/register", async (req, res, next) => {
         message: "Password too short",
       });
     }
-
     const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
     const user = await createUser({ username, password: hashedPassword });
 
@@ -73,28 +72,28 @@ authRouter.post("/login", async (req, res, next) => {
   }
 });
 
-authRouter.post("/logout", async (req, res, next) => {
-  try {
-    res.clearCookie("token", {
-      sameSite: "strict",
-      httpOnly: true,
-      signed: true,
-    });
-    res.send({
-      loggedIn: false,
-      message: "Logged Out",
-    });
-  } catch (error) {
-    next(error);
-  }
-});
+// authRouter.post("/logout", async (req, res, next) => {
+//   try {
+//     res.clearCookie("token", {
+//       sameSite: "strict",
+//       httpOnly: true,
+//       signed: true,
+//     });
+//     res.send({
+//       loggedIn: false,
+//       message: "Logged Out",
+//     });
+//   } catch (error) {
+//     next(error);
+//   }
+// });
 
-authRouter.get("/me", authRequired, async (req, res, next) => {
-  try {
-    res.send(req.user);
-  } catch (error) {
-    next(error);
-  }
-});
+// authRouter.get("/me", authRequired, async (req, res, next) => {
+//   try {
+//     res.send(req.user);
+//   } catch (error) {
+//     next(error);
+//   }
+// });
 
 module.exports = authRouter;
