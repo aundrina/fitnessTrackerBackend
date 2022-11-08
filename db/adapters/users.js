@@ -33,7 +33,7 @@ async function getUser({ username, password }) {
   }
 }
 
-async function getUserById({ id }) {
+async function getUserById(id) {
   try {
     const {
       rows: [user],
@@ -49,7 +49,7 @@ async function getUserById({ id }) {
   }
 }
 
-async function getUserByUsername({ username }) {
+async function getUserByUsername(username) {
   try {
     const {
       rows: [user],
@@ -57,9 +57,8 @@ async function getUserByUsername({ username }) {
       `
       SELECT *
       FROM users
-      WHERE username=$1;
-    `,
-      [username]
+      WHERE username='${username}';
+    `
     );
 
     return user;

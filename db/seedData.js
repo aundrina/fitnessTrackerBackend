@@ -17,20 +17,20 @@ const routines = [
   {
     name: "leg day",
     goal: "3 sets",
-    creatorId: 1,
-    isPublic: true,
+    creator_id: 1,
+    is_public: true,
   },
   {
     name: "chest day",
     goal: "4 sets",
-    creatorId: 2,
-    isPublic: true,
+    creator_id: 2,
+    is_public: true,
   },
   {
     name: "arms",
     goal: "reps till failure",
-    creatorId: 3,
-    isPublic: true,
+    creator_id: 3,
+    is_public: true,
   },
 ];
 

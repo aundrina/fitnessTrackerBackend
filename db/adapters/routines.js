@@ -8,7 +8,7 @@ async function getRoutineById(routine_id) {
       rows: [routine],
     } = await client.query(`
   SELECT routines.*, users.username AS "creatorName",
-  CASE WHEN ra.routine id is NULL THEN'[]'::ison
+  CASE WHEN ra."routineId" is NULL THEN'[]'::json
   ELSE
   JSON_AGG(
     JSON_BUILD_OBJECT(
@@ -20,14 +20,14 @@ async function getRoutineById(routine_id) {
     )
   ) END AS activities
   FROM routines
-  LEFT JOIN routine activities AS ra
-    ON routines.id=ra.routine_ id
+  LEFT JOIN routine_activities AS ra
+    ON routines.id=ra."routineId"
   LEFT JOIN activities
-    ON activities.id=ra.activity id
+    ON activities.id=ra."activityId"
   JOIN users
-    ON routines.creator_id-users.id
+    ON routines.creator_id=users.id
   WHERE routines.id=${routine_id}
-  GROUP BY routines.id, ra.routine_id, users.username`);
+  GROUP BY routines.id, ra."routineId", users.username`);
     return routine;
   } catch (error) {
     throw error;
@@ -67,7 +67,7 @@ async function getAllRoutines() {
 	LEFT JOIN activities 
 		ON ra."activityId" = activities.id
 	JOIN users
-		ON routines."creatorId" = users.id	
+		ON routines.creator_id = users.id	
 	GROUP BY routines.id, ra."routineId", users.username`
     );
     return rows;
@@ -96,8 +96,8 @@ async function getAllPublicRoutines() {
 	LEFT JOIN activities 
 		ON ra."activityId" = activities.id
 	JOIN users
-		ON routines."creatorId" = users.id	
-  WHERE "isPublic"= true
+		ON routines.creator_id = users.id	
+  WHERE is_public= true
 	GROUP BY routines.id, ra."routineId", users.username`
     );
     return rows;
@@ -105,7 +105,7 @@ async function getAllPublicRoutines() {
     throw error;
   }
 }
-async function getAllRoutinesByUser({ username }) {
+async function getAllRoutinesByUser(username) {
   try {
     const { rows } = await client.query(
       `
@@ -127,7 +127,7 @@ async function getAllRoutinesByUser({ username }) {
       LEFT JOIN activities 
         ON ra."activityId" = activities.id
       JOIN users
-        ON routines."creatorId" = users.id	
+        ON routines.creator_id = users.id	
         WHERE users.username='${username}'
       GROUP BY routines.id, ra."routineId", users.username;
     `
@@ -138,7 +138,7 @@ async function getAllRoutinesByUser({ username }) {
   }
 }
 
-async function getPublicRoutinesByUser({ username }) {
+async function getPublicRoutinesByUser(username) {
   try {
     const { rows } = await client.query(
       `
@@ -160,8 +160,8 @@ async function getPublicRoutinesByUser({ username }) {
         LEFT JOIN activities 
           ON ra."activityId" = activities.id
         JOIN users
-          ON routines."creatorId" = users.id	
-          WHERE users.username='${username}' and "isPublic"= true
+          ON routines.creator_id = users.id	
+          WHERE users.username='${username}' and is_public= true
         GROUP BY routines.id, ra."routineId", users.username;
       `
     );
@@ -193,8 +193,8 @@ async function getPublicRoutinesByActivity({ activityId }) {
         LEFT JOIN activities 
           ON ra."activityId" = activities.id
         JOIN users
-          ON routines."creatorId" = users.id	
-          WHERE "activityId"='${activityId}' and "isPublic"= true
+          ON routines.creator_id = users.id	
+          WHERE "activityId"='${activityId}' and is_public= true
         GROUP BY routines.id, ra."routineId", users.username;
       `
     );
@@ -204,14 +204,14 @@ async function getPublicRoutinesByActivity({ activityId }) {
   }
 }
 
-async function createRoutine({ creatorId, isPublic, name, goal }) {
+async function createRoutine({ creator_id, is_public, name, goal }) {
   try {
     const rows = await client.query(
       `
-  INSERT INTO routines("creatorId", "isPublic", name, goal) 
+  INSERT INTO routines(creator_id, is_public, name, goal) 
         VALUES ($1, $2, $3, $4)
         `,
-      [creatorId, isPublic, name, goal]
+      [creator_id, is_public, name, goal]
     );
     return rows;
   } catch (error) {
@@ -220,6 +220,7 @@ async function createRoutine({ creatorId, isPublic, name, goal }) {
 }
 
 async function updateRoutine({ id, fields = {} }) {
+  console.log({ id, fields });
   const setString = Object.keys(fields)
     .map((key, i) => {
       return `${key}=$${i + 1}`;
@@ -265,4 +266,7 @@ module.exports = {
   getAllPublicRoutines,
   getAllRoutinesByUser,
   createRoutine,
+  getPublicRoutinesByUser,
+  updateRoutine,
+  destroyRoutine,
 };

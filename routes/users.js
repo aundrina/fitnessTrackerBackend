@@ -1,16 +1,13 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const authRouter = require("express").Router();
-const {
-  getUserByUsername,
-  getUserById,
-  createUser,
-} = require("../db/adapters/users");
-const { JWT_SECRET } = require("../.env");
-// const { authRequired } = require("./index");
+const userRouter = require("express").Router();
+const { getUserByUsername, createUser } = require("../db/adapters/users");
+const { getPublicRoutinesByUser } = require("../db/adapters/routines");
+const { JWT_SECRET } = process.env;
+const { authRequired } = require("./utils");
 const SALT_ROUNDS = 10;
 
-authRouter.post("/register", async (req, res, next) => {
+userRouter.post("/register", async (req, res, next) => {
   const { username, password } = req.body;
   try {
     const _user = await getUserByUsername(username);
@@ -45,17 +42,17 @@ authRouter.post("/register", async (req, res, next) => {
   }
 });
 
-authRouter.post("/login", async (req, res, next) => {
+userRouter.post("/login", async (req, res, next) => {
   try {
     const { username, password } = req.body;
     const user = await getUserByUsername(username);
-    const id = await getUserById(id);
+
     const validPassword = await bcrypt.compare(password, user.password);
 
     delete user.password;
 
     if (validPassword) {
-      const token = jwt.sign(user, id, JWT_SECRET);
+      const token = jwt.sign(user, JWT_SECRET);
 
       res.cookie("token", token, {
         sameSite: "strict",
@@ -72,28 +69,39 @@ authRouter.post("/login", async (req, res, next) => {
   }
 });
 
-// authRouter.post("/logout", async (req, res, next) => {
-//   try {
-//     res.clearCookie("token", {
-//       sameSite: "strict",
-//       httpOnly: true,
-//       signed: true,
-//     });
-//     res.send({
-//       loggedIn: false,
-//       message: "Logged Out",
-//     });
-//   } catch (error) {
-//     next(error);
-//   }
-// });
+userRouter.post("/logout", async (req, res, next) => {
+  try {
+    res.clearCookie("token", {
+      sameSite: "strict",
+      httpOnly: true,
+      signed: true,
+    });
+    res.send({
+      loggedIn: false,
+      message: "Logged Out",
+    });
+  } catch (error) {
+    next(error);
+  }
+});
 
-// authRouter.get("/me", authRequired, async (req, res, next) => {
-//   try {
-//     res.send(req.user);
-//   } catch (error) {
-//     next(error);
-//   }
-// });
+userRouter.get("/me", authRequired, async (req, res, next) => {
+  try {
+    res.send(req.user);
+  } catch (error) {
+    next(error);
+  }
+});
 
-module.exports = authRouter;
+userRouter.get("/:username/routines", async (req, res, next) => {
+  const { username } = req.params;
+
+  try {
+    const publicRoutines = await getPublicRoutinesByUser(username);
+    res.send({ publicRoutines });
+  } catch (error) {
+    next(error);
+  }
+});
+
+module.exports = userRouter;
