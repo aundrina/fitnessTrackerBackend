@@ -1,5 +1,4 @@
 const jwt = require("jsonwebtoken");
-const { routines } = require("../db/seedData");
 const routineRouter = require("express").Router();
 const {
   getAllPublicRoutines,
@@ -8,6 +7,9 @@ const {
   destroyRoutine,
   getRoutineById,
 } = require("../db/adapters/routines");
+const {
+  removeAllActivitiesFromRoutine,
+} = require("../db/adapters/routine_activities");
 const { authRequired } = require("./utils");
 
 routineRouter.get("/routines", async (req, res, next) => {
@@ -75,18 +77,20 @@ routineRouter.patch("/:routineId", authRequired, async (req, res, next) => {
   }
 });
 
+// DELETE /routes/routines/:routineId
 routineRouter.delete("/:routineId", authRequired, async (req, res, next) => {
   const { routineId } = req.params;
   try {
     const routine = await getRoutineById(+routineId);
 
-    if (routineId && routine.creator_id === req.user.id) {
+    if (routine.creator_id === req.user.id) {
+      const deletedRA = await removeAllActivitiesFromRoutine(+routineId);
       const deleteRoutine = await destroyRoutine(+routineId);
 
       res.send({ routine: deleteRoutine });
     } else {
       next(
-        post
+        routine
           ? {
               name: "UnauthorizedUserError",
               message: "You cannot delete a routine which is not yours",

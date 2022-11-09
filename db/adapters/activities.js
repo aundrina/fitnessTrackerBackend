@@ -47,26 +47,26 @@ async function createActivity({ name, description }) {
   }
 }
 
-async function updateActivity(id, fields = {}) {
+async function updateActivity({ id, fields = {} }) {
+  console.log({ id, fields });
   const setString = Object.keys(fields)
-    .map((key, index) => `"${key}"=$${index + 1}`)
+    .map((key, i) => {
+      return `${key}=$${i + 1}`;
+    })
     .join(", ");
 
   try {
-    if (setString.length > 0) {
-      const {
-        rows: [activity],
-      } = await client.query(
-        `
-        UPDATE activities
-        SET ${setString}
-        WHERE id=${id}
-        RETURNING *;
-        `,
-        Object.values(fields)
-      );
-      return activity;
-    }
+    const {
+      rows: [activity],
+    } = await client.query(
+      ` UPDATE activities
+          SET ${setString}
+          WHERE id = ${id}
+          RETURNING *
+          `,
+      Object.values(fields)
+    );
+    return activity;
   } catch (error) {
     throw error;
   }

@@ -88,10 +88,25 @@ async function getRoutineActivitiesByRoutine({ routineId }) {
   }
 }
 
+async function removeAllActivitiesFromRoutine(routineId) {
+  try {
+    const {
+      rows: [deletedRA],
+    } = await client.query(`
+    DELETE FROM routine_activities
+    WHERE "routineId"= ${routineId};
+    `);
+    return deletedRA;
+  } catch (error) {
+    throw error;
+  }
+}
+
 module.exports = {
   getRoutineActivityById,
   addActivityRoutine,
   updateRoutineActivity,
   destroyActivity,
   getRoutineActivitiesByRoutine,
+  removeAllActivitiesFromRoutine,
 };

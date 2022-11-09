@@ -171,7 +171,7 @@ async function getPublicRoutinesByUser(username) {
   }
 }
 
-async function getPublicRoutinesByActivity({ activityId }) {
+async function getPublicRoutinesByActivity(activityId) {
   try {
     const { rows } = await client.query(
       `
@@ -229,7 +229,7 @@ async function updateRoutine({ id, fields = {} }) {
 
   try {
     const {
-      rows: [routine_activity],
+      rows: [routine],
     } = await client.query(
       ` UPDATE routines
         SET ${setString}
@@ -238,22 +238,24 @@ async function updateRoutine({ id, fields = {} }) {
         `,
       Object.values(fields)
     );
-    return routine_activity;
+    return routine;
   } catch (error) {
     throw error;
   }
 }
 
-async function destroyRoutine({ id }) {
+async function destroyRoutine(id) {
   try {
-    const { rows } = await client.query(
-      `DELETE FROM routines
-      WHERE id= $1
+    const {
+      rows: [deletedRoutine],
+    } = await client.query(
+      `      
+      DELETE FROM routines
+      WHERE id= ${id}
       RETURNING *
-    `,
-      [id]
+    `
     );
-    return rows[0];
+    return deletedRoutine;
   } catch (error) {
     throw error;
   }
@@ -269,4 +271,5 @@ module.exports = {
   getPublicRoutinesByUser,
   updateRoutine,
   destroyRoutine,
+  getPublicRoutinesByActivity,
 };
