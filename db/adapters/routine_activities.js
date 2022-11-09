@@ -1,7 +1,7 @@
 const client = require("../client");
 const { routine_activities } = require("../seedData");
 
-async function getRoutineActivityById({ id }) {
+async function getRoutineActivityById(id) {
   try {
     const {
       rows: [routine_activity],

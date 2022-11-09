@@ -35,7 +35,7 @@ userRouter.post("/register", async (req, res, next) => {
       httpOnly: true,
       signed: true,
     });
-
+    console.log(user);
     res.send({ user });
   } catch (error) {
     next(error);
@@ -49,8 +49,6 @@ userRouter.post("/login", async (req, res, next) => {
 
     const validPassword = await bcrypt.compare(password, user.password);
 
-    delete user.password;
-
     if (validPassword) {
       const token = jwt.sign(user, JWT_SECRET);
 
@@ -61,7 +59,7 @@ userRouter.post("/login", async (req, res, next) => {
       });
 
       delete user.password;
-
+      console.log(user);
       res.send({ user });
     }
   } catch (error) {
