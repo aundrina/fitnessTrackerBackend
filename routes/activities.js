@@ -18,7 +18,7 @@ activitiesRouter.get("/activities", async (req, res, next) => {
   }
 });
 
-activitiesRouter.post("/activities", authRequired, async (req, res, next) => {
+activitiesRouter.post("/", authRequired, async (req, res, next) => {
   const { name, description } = req.body;
   try {
     const newActivity = await createActivity({
@@ -42,31 +42,29 @@ activitiesRouter.get("/:activityId/routines", async (req, res, next) => {
   }
 });
 
-// activitiesRouter.patch("/:activityId", authRequired, async (req, res, next) => {
-//   const { activityId } = req.params;
-//   const { name, description } = req.body;
+activitiesRouter.patch("/:activityId", authRequired, async (req, res, next) => {
+  const { activityId } = req.params;
+  const { name, description } = req.body;
 
-//   const updateFields = {};
+  const updateFields = {};
 
-//   if (name) {
-//     updateFields.name = name;
-//   }
+  if (name) {
+    updateFields.name = name;
+  }
 
-//   if (description) {
-//     updateFields.description = description;
-//   }
+  if (description) {
+    updateFields.description = description;
+  }
 
-//   try {
-//     const oldActivity = await getActivityById(+activityId);
-
-//     const updatedActivity = await updateActivity({
-//       id: +activityId,
-//       fields: updateFields,
-//     });
-//     res.send({ updatedActivity });
-//   } catch ({ name, message }) {
-//     next({ name, message });
-//   }
-// });
+  try {
+    const updatedActivity = await updateActivity({
+      id: activityId,
+      fields: updateFields,
+    });
+    res.send({ updatedActivity });
+  } catch ({ name, message }) {
+    next({ name, message });
+  }
+});
 
 module.exports = activitiesRouter;

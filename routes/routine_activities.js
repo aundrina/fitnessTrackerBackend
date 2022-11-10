@@ -5,8 +5,10 @@ const {
   addActivityRoutine,
   updateRoutineActivity,
   getRoutineActivityById,
+  destroyActivity,
 } = require("../db/adapters/routine_activities");
 const { getRoutineById } = require("../db/adapters/routines");
+const { getActivityById } = require("../db/adapters/activities");
 
 raRouter.post("/", async (req, res, next) => {
   const { duration, count, routineId, activityId } = req.body;
@@ -39,20 +41,14 @@ raRouter.patch("/:routineActivityId", authRequired, async (req, res, next) => {
 
   try {
     const ra = await getRoutineActivityById(routineActivityId);
+    const routine = await getRoutineById(ra.routineId);
 
-    const routineId = ra.routineId;
-    const routine = await getRoutineById(routineId);
-    console.log(req.user);
     if (routine.creator_id === req.user.id) {
-      console.log({
-        id: +routineActivityId,
-        fields: updateFields,
-      });
       const updatedRa = await updateRoutineActivity({
-        id: +routineActivityId,
+        id: routineActivityId,
         fields: updateFields,
       });
-      res.send({ routine: updatedRa });
+      res.send({ updatedRa });
     } else {
       next({
         name: "UnauthorizedUserError",
@@ -64,4 +60,27 @@ raRouter.patch("/:routineActivityId", authRequired, async (req, res, next) => {
   }
 });
 
+raRouter.delete(
+  "/:routineId/:activityId",
+  authRequired,
+  async (req, res, next) => {
+    const { routineId, activityId } = req.params;
+    try {
+      const routine = await getRoutineById(routineId);
+
+      if (routine.creator_id === req.user.id) {
+        const deleteActivity = await destroyActivity({ routineId, activityId });
+
+        res.send(deleteActivity);
+      } else {
+        next({
+          name: "UnauthorizedUserError",
+          message: "You cannot delete a routine activity which is not yours",
+        });
+      }
+    } catch ({ name, message }) {
+      next({ name, message });
+    }
+  }
+);
 module.exports = raRouter;

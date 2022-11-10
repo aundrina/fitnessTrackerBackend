@@ -22,19 +22,20 @@ userRouter.post("/register", async (req, res, next) => {
         name: "PasswordError",
         message: "Password too short",
       });
+    } else {
+      const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
+      const user = await createUser({ username, password: hashedPassword });
+
+      delete user.password;
+
+      const token = jwt.sign(user, JWT_SECRET);
+
+      res.cookie("token", token, {
+        sameSite: "strict",
+        httpOnly: true,
+        signed: true,
+      });
     }
-    const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
-    const user = await createUser({ username, password: hashedPassword });
-
-    delete user.password;
-
-    const token = jwt.sign(user, JWT_SECRET);
-
-    res.cookie("token", token, {
-      sameSite: "strict",
-      httpOnly: true,
-      signed: true,
-    });
     console.log(user);
     res.send({ user });
   } catch (error) {

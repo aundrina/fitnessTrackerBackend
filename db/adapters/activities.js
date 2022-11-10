@@ -1,13 +1,13 @@
 const client = require("../client");
 
-async function getActivityById({ activityId }) {
+async function getActivityById(activity_id) {
   try {
     const {
       rows: [activity],
     } = await client.query(
       `
-    SELECT id,name,description  FROM activities 
-        WHERE id=$'{activityId}' 
+    SELECT id, name,description  FROM activities 
+    WHERE id=${activity_id}
     `
     );
     return activity;
@@ -59,11 +59,11 @@ async function updateActivity({ id, fields = {} }) {
     const {
       rows: [activity],
     } = await client.query(
-      ` UPDATE activities
-          SET ${setString}
-          WHERE id = ${id}
-          RETURNING *
-          `,
+      `  UPDATE activities
+      SET ${setString}
+      WHERE id = ${id}
+      RETURNING *
+      `,
       Object.values(fields)
     );
     return activity;

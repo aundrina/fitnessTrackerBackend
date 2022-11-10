@@ -21,7 +21,7 @@ routineRouter.get("/routines", async (req, res, next) => {
   }
 });
 
-routineRouter.post("/routines", authRequired, async (req, res, next) => {
+routineRouter.post("/", authRequired, async (req, res, next) => {
   const { creator_id, is_public, name, goal } = req.body;
   try {
     const newRoutine = await createRoutine({
@@ -77,7 +77,6 @@ routineRouter.patch("/:routineId", authRequired, async (req, res, next) => {
   }
 });
 
-// DELETE /routes/routines/:routineId
 routineRouter.delete("/:routineId", authRequired, async (req, res, next) => {
   const { routineId } = req.params;
   try {
