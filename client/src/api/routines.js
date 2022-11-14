@@ -1,4 +1,4 @@
-export async function getRoutines() {
+export async function fetchRoutines() {
   const response = await fetch("/routes/routines", {
     method: "GET",
     headers: {

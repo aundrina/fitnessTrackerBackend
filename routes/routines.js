@@ -12,7 +12,7 @@ const {
 } = require("../db/adapters/routine_activities");
 const { authRequired } = require("./utils");
 
-routineRouter.get("/routines", async (req, res, next) => {
+routineRouter.get("/", async (req, res, next) => {
   try {
     const allRoutines = await getAllPublicRoutines();
     res.send({ allRoutines });
