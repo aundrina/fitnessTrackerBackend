@@ -11,7 +11,7 @@ function Routines() {
   useEffect(() => {
     async function getRoutines() {
       const info = await fetchRoutines();
-      setRoutines(info);
+      setRoutines(info.allRoutines);
       console.log("info", info);
     }
     getRoutines();

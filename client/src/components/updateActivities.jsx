@@ -1,13 +1,11 @@
-import { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
-import { useNavigate } from "react-router-dom";
-import { updateRoutine } from "../api/routines";
-import { useParams } from "react-router-dom";
+import updateActivities from "../api/Activities";
 
-export default function UpdateRoutine() {
+export default function UpdateActivities() {
   const { id } = useParams();
   const [name, setName] = useState("");
-  const [goal, setGoal] = useState("");
+  const [description, setDescription] = useState("");
   const { token } = useAuth("");
   const navigate = useNavigate("");
   return (
@@ -15,8 +13,13 @@ export default function UpdateRoutine() {
       on
       submit={async (event) => {
         event.preventDefault();
-        const updateRoutine = await updateRoutine(id, name, goal, token);
-        console.log(updateRoutine);
+        const UpdateActivities = await updateActivities(
+          id,
+          name,
+          description,
+          token
+        );
+        console.log(UpdateActivities);
         navigate("/");
       }}
     >
@@ -25,14 +28,14 @@ export default function UpdateRoutine() {
         value={name}
         onChange={(event) => setName(event.target.value)}
         type="text"
-        placeholder="updated Routine"
+        placeholder="updated Activities"
       />
       <input
         className="updateIn"
-        value={goal}
+        value={description}
         onChange={(event) => setGoal(event.target.value)}
         type="text"
-        placeholder="update Goal"
+        placeholder="update Description"
       />
       <button> Submit </button>
     </form>
