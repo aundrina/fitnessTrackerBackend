@@ -9,30 +9,38 @@ export async function fetchActivities() {
   return result;
 }
 
-export async function createActivity() {
+export async function createActivity(name, description) {
   const response = await fetch("/routes/activities", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
+    body: JSON.stringify({
+      name,
+      description,
+    }),
   });
   const result = await response.json();
   return result;
 }
 
-export async function updateActivity() {
-  const response = await fetch("/routes/routines/:routineId", {
+export async function updateActivity(name, description, id) {
+  const response = await fetch(`/routes/routines/${id}`, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
     },
+    body: JSON.stringify({
+      name,
+      description,
+    }),
   });
   const result = await response.json();
   return result;
 }
-export async function fetchActivities() {
+export async function fetchActivity(routineId, activityId) {
   const response = await fetch(
-    "/routes/routine_activities/:routineId/:activityId",
+    `/routes/routine_activities/${routineId}/${activityId}`,
     {
       method: "GET",
       headers: {

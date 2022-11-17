@@ -1,0 +1,11 @@
+.create {
+  display: flex;
+  flex-direction: column;
+  gap: 3vh;
+}
+
+.post {
+  margin-bottom: 5vh;
+  border-bottom: 2px solid black;
+  padding-bottom: 1vh;
+}

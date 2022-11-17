@@ -1,17 +1,17 @@
-import { useParams, useState } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { fetchActivities } from "../api/Activities";
+import styles from "../styles/Routines.module.css";
+import { fetchActivities } from "../api/activities";
 
 function Activities() {
   // const navigate = useNavigate();
-  const [Activities, setActivities] = useState([]);
+  const [activities, setActivities] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     async function getActivities() {
       const info = await fetchActivities();
       setActivities(info.allActivities);
-      console.log("info", info);
     }
     getActivities();
   }, []);
@@ -20,7 +20,7 @@ function Activities() {
     return activity.name.toLowerCase().includes(text);
   }
 
-  const filteredActivities = activities.filter((activities) =>
+  const filteredActivities = activities.filter((activity) =>
     ActivityMatches(activity, searchTerm)
   );
   const activitiesToDisplay = searchTerm.length
@@ -41,11 +41,11 @@ function Activities() {
           <b>Activities</b>
         </h1>
       </div>
-      {activitiesToDisplay.map((activities) => {
+      {activitiesToDisplay.map((activity) => {
         return (
           <div key={activity.id}>
-            <h3>name: {activities.name}</h3>
-            <h6>description: {activities.description}</h6>
+            <h3>Name: {activity.name}</h3>
+            <h6>Description: {activity.description}</h6>
           </div>
         );
       })}

@@ -1,29 +1,31 @@
 import "./App.css";
-import Auth from "./components/Auth";
 import NavBar from "./components/NavBar";
 import { Routes, Route, BrowserRouter } from "react-router-dom";
 import Routines from "./components/Routines";
 import UpdateRoutine from "./components/UpdateRoutine";
+import Activities from "./components/Activities";
+import SingleRoutine from "./components/SingleRoutine";
+import NewActivity from "./components/CreateActivity";
+import NewRoutine from "./components/CreateRoutine";
+import User from "./components/User";
+import useUsers from "./hooks/useUsers";
+import MyRoutines from "./components/MyRoutines";
 
-import Login from "./components/Auth";
-import Register from "./components/Auth";
-import useAuth from "./hooks/useAuth";
 function App() {
-  const { setToken, user } = useAuth();
-  const login = "/auth/login";
-  const register = "/auth/register";
+  const { user } = useUsers();
   return (
     <div className="App">
       <BrowserRouter>
-        <NavBar user={user} setToken={setToken} />
+        <NavBar user={user} />
         <Routes>
           <Route path="/" element={<Routines />} />
-          <Route path="/updateRoutine" element={<UpdateRoutine />} />
-          <Route path="/auth/login" element={<Login setToken={setToken} />} />
-          <Route
-            path="/auth/register"
-            element={<Register setToken={setToken} />}
-          />
+          <Route path="/user/:userFunction" element={<User />} />
+          <Route path="/UpdateRoutine/:routineId" element={<UpdateRoutine />} />
+          <Route path="/Routines/:routineId" element={<SingleRoutine />} />
+          <Route path="/MyRoutines" element={<MyRoutines />} />
+          <Route path="/Activities" element={<Activities />} />
+          <Route path="/CreateRoutine" element={<NewRoutine />} />
+          <Route path="/CreateActivity" element={<NewActivity />} />
         </Routes>
       </BrowserRouter>
     </div>

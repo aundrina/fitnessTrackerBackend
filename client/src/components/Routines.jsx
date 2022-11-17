@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import styles from "../styles/Routines.module.css";
 
 function Routines() {
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const [routines, setRoutines] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -12,7 +12,6 @@ function Routines() {
     async function getRoutines() {
       const info = await fetchRoutines();
       setRoutines(info.allRoutines);
-      console.log("info", info);
     }
     getRoutines();
   }, []);
@@ -37,7 +36,7 @@ function Routines() {
       />
       <div className={styles.head}>
         <h1>
-          <b>Routines</b>
+          <b>Public Routines</b>
         </h1>
       </div>
       {routinesToDisplay.map((routine) => {
@@ -45,6 +44,14 @@ function Routines() {
           <div key={routine.id}>
             <h3>Routine: {routine.name}</h3>
             <h6>Goal: {routine.goal}</h6>
+            <h6>Creator: {routine.creatorName}</h6>
+            <button
+              onClick={() => {
+                navigate(`/routines/${routine.id}`);
+              }}
+            >
+              See Routine
+            </button>
           </div>
         );
       })}
