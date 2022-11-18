@@ -24,8 +24,9 @@ export async function createActivity(name, description) {
   return result;
 }
 
-export async function updateActivity(name, description, id) {
-  const response = await fetch(`/routes/routines/${id}`, {
+export async function updateActivity(name, description, activityId) {
+  console.log(name, description, activityId);
+  const response = await fetch(`/routes/activities/${activityId}`, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",

@@ -2,15 +2,15 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createRoutine } from "../api/routines";
 import styles from "../styles/CreateActivity.module.css";
-import Form from "react-bootstrap/Form"
+import Form from "react-bootstrap/Form";
+import useUsers from "../hooks/useUsers";
 
 export default function NewRoutine() {
   const navigate = useNavigate();
 
-  const [name, setName] = useState([]);
-  const [goal, setGoal] = useState([]);
-  const [is_public, setIsPublic] = useState([]);
-  const [creator_id, setCreatorId] = useState([]);
+  const [name, setName] = useState();
+  const [goal, setGoal] = useState();
+  const [is_public, setIsPublic] = useState();
 
   return (
     <div>
@@ -19,8 +19,8 @@ export default function NewRoutine() {
         className={styles.create}
         onSubmit={async (e) => {
           e.preventDefault();
-          const result = await createRoutine(name, goal, is_public, creator_id);
-          console.log(name, goal);
+          const result = await createRoutine(name, goal, is_public);
+          console.log(name, goal, is_public);
           navigate("/");
         }}
       >
@@ -40,8 +40,15 @@ export default function NewRoutine() {
             setGoal(e.target.value);
           }}
         ></input>
+        <label> Checkmark for Routine to be made Public </label>
         <input
-        type=""
+          type="radio"
+          placeholder="is_public"
+          value={is_public}
+          onChange={() => {
+            setIsPublic(!is_public);
+          }}
+        ></input>
 
         <button type="submit"> Submit</button>
       </form>

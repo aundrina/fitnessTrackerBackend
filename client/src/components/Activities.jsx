@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "../styles/Routines.module.css";
 import { fetchActivities } from "../api/activities";
+import Nav from "react-bootstrap/Nav";
+import { Link } from "react-router-dom";
 
 function Activities() {
   // const navigate = useNavigate();
@@ -29,6 +31,9 @@ function Activities() {
 
   return (
     <div className={styles.Routines}>
+      <Nav.Item>
+        <Link to="CreateActivity"> Create Activity </Link>
+      </Nav.Item>
       <input
         className={styles.search}
         type="text"

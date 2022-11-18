@@ -10,6 +10,7 @@ import NewRoutine from "./components/CreateRoutine";
 import User from "./components/User";
 import useUsers from "./hooks/useUsers";
 import MyRoutines from "./components/MyRoutines";
+import UpdateActivity from "./components/UpdateActivities";
 
 function App() {
   const { user } = useUsers();
@@ -21,11 +22,15 @@ function App() {
           <Route path="/" element={<Routines />} />
           <Route path="/user/:userFunction" element={<User />} />
           <Route path="/UpdateRoutine/:routineId" element={<UpdateRoutine />} />
+          <Route
+            path="/UpdateActivity/:activityId"
+            element={<UpdateActivity />}
+          />
           <Route path="/Routines/:routineId" element={<SingleRoutine />} />
           <Route path="/MyRoutines" element={<MyRoutines />} />
           <Route path="/Activities" element={<Activities />} />
-          <Route path="/CreateRoutine" element={<NewRoutine />} />
-          <Route path="/CreateActivity" element={<NewActivity />} />
+          <Route path="/MyRoutines/CreateRoutine" element={<NewRoutine />} />
+          <Route path="/Activities/CreateActivity" element={<NewActivity />} />
         </Routes>
       </BrowserRouter>
     </div>

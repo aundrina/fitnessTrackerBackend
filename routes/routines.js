@@ -32,14 +32,11 @@ routineRouter.get("/:routineId", async (req, res, next) => {
 });
 
 routineRouter.post("/", authRequired, async (req, res, next) => {
-  const { creator_id, is_public, name, goal } = req.body;
+  const { is_public, name, goal } = req.body;
   try {
-    const newRoutine = await createRoutine({
-      creator_id,
-      is_public,
-      name,
-      goal,
-    });
+    const data = { creator_id: req.user.id, is_public, name, goal };
+
+    const newRoutine = await createRoutine(data);
     res.send({ newRoutine });
   } catch (error) {
     next(error);

@@ -1,43 +1,45 @@
-// import { useNavigate, useParams } from "react-router-dom";
-// import { useState } from "react";
-// import useAuth from "../hooks/useAuth";
-// import updateActivity from "../api/activities";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { updateActivity } from "../api/activities";
+import { useParams } from "react-router-dom";
 
-// export default function UpdateActivity() {
-//   const { id } = useParams();
-//   const [name, setName] = useState("");
-//   const [goal, setGoal] = useState("");
-//   const { token } = useAuth("");
-//   const navigate = useNavigate("");
-//   return (
-//     <>
-//       <h3>Edit Activity </h3>
-//       <form
-//         onSubmit={async (e) => {
-//           e.preventDefault();
-//           const result = await updateActivity(name, goal, token, id);
-//           navigate("/");
-//           console.log(result);
-//         }}
-//       >
-//         <input
-//           type="text"
-//           placeholder="title"
-//           value={name}
-//           onChange={(e) => {
-//             setName(e.target.value);
-//           }}
-//         ></input>
-//         <input
-//           type="text"
-//           placeholder="goal"
-//           value={goal}
-//           onChange={(e) => {
-//             setGoal(e.target.value);
-//           }}
-//         ></input>
-//         <button type="submit"> Submit</button>
-//       </form>
-//     </>
-//   );
-// }
+export default function UpdateActivity() {
+  const { activityId } = useParams();
+  const navigate = useNavigate();
+
+  const [name, setName] = useState();
+  const [description, setDescription] = useState();
+
+  return (
+    <>
+      <h3>Edit Activity </h3>
+      <form
+        onSubmit={async (e) => {
+          e.preventDefault();
+          const result = await updateActivity(name, description, activityId);
+          navigate("/Activities");
+          console.log(result);
+        }}
+      >
+        <input
+          type="text"
+          placeholder="name"
+          value={name}
+          onChange={(e) => {
+            setName(e.target.value);
+          }}
+        />
+        <input
+          type="text"
+          placeholder="description"
+          value={description}
+          onChange={(e) => {
+            setDescription(e.target.value);
+          }}
+        />
+
+        <button type="submit"> Submit</button>
+      </form>
+    </>
+  );
+}
