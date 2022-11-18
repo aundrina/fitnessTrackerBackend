@@ -20,7 +20,7 @@ export async function fetchRoutineById(id) {
   return result;
 }
 
-export async function createRoutine(name, goal, is_public, creator_id) {
+export async function createRoutine(name, goal, is_public) {
   const response = await fetch("/routes/routines", {
     method: "POST",
     headers: {
@@ -30,15 +30,15 @@ export async function createRoutine(name, goal, is_public, creator_id) {
       name,
       goal,
       is_public,
-      creator_id,
     }),
   });
   const result = await response.json();
   return result;
 }
 
-export async function updateRoutine(name, goal, id) {
-  const response = await fetch(`/routes/routines/${id}`, {
+export async function updateRoutine(name, goal, is_public, routineId) {
+  console.log(name, goal, is_public, routineId);
+  const response = await fetch(`/routes/routines/${routineId}`, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
@@ -46,6 +46,7 @@ export async function updateRoutine(name, goal, id) {
     body: JSON.stringify({
       name,
       goal,
+      is_public,
     }),
   });
   const result = await response.json();

@@ -8,6 +8,7 @@ export default function NewActivity() {
 
   const [name, setName] = useState([]);
   const [description, setDescription] = useState([]);
+  const [error, setError] = useState("");
 
   return (
     <div>
@@ -17,10 +18,15 @@ export default function NewActivity() {
         onSubmit={async (e) => {
           e.preventDefault();
           const result = await createActivity(name, description);
-          console.log(name, description);
-          navigate("/");
+          if (result.success) {
+            console.log(name, description);
+            navigate("/activities");
+          } else {
+            setError(result.message);
+          }
         }}
       >
+        {error && <h5>{error}</h5>}
         <input
           type="text"
           placeholder="name"

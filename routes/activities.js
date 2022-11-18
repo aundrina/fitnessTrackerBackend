@@ -27,7 +27,7 @@ activitiesRouter.post("/", authRequired, async (req, res, next) => {
     });
     res.send({ newActivity });
   } catch (error) {
-    next(error);
+    next({ message: "Activity already exists. Please enter different name!" });
   }
 });
 
@@ -61,7 +61,7 @@ activitiesRouter.patch("/:activityId", authRequired, async (req, res, next) => {
       id: activityId,
       fields: updateFields,
     });
-    res.send({ updatedActivity });
+    res.send({ activity: updatedActivity });
   } catch ({ name, message }) {
     next({ name, message });
   }
