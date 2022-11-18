@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createRoutine } from "../api/routines";
 import styles from "../styles/CreateActivity.module.css";
-import Form from "react-bootstrap/Form"
+import Form from "react-bootstrap/Form";
 
 export default function NewRoutine() {
   const navigate = useNavigate();
@@ -40,8 +40,6 @@ export default function NewRoutine() {
             setGoal(e.target.value);
           }}
         ></input>
-        <input
-        type=""
 
         <button type="submit"> Submit</button>
       </form>
