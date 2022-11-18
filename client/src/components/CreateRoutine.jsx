@@ -40,7 +40,8 @@ export default function NewRoutine() {
             setGoal(e.target.value);
           }}
         ></input>
-        <input 
+        <input
+        type=""
 
         <button type="submit"> Submit</button>
       </form>

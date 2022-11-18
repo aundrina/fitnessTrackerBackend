@@ -14,13 +14,13 @@ userRouter.post("/register", async (req, res, next) => {
     if (_user) {
       next({
         name: "UserExistsError",
-        message: "A user by that username already exists",
+        message: "A user by that username already exists, please try again",
       });
-    }
-    if (password.length < 8) {
+    } else if (password.length < 8) {
+      console.log("password error");
       next({
         name: "PasswordError",
-        message: "Password too short",
+        message: "Password must be 8 characters or more, please try again",
       });
     } else {
       const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
@@ -35,22 +35,26 @@ userRouter.post("/register", async (req, res, next) => {
         httpOnly: true,
         signed: true,
       });
+      console.log(user);
+      res.send({ user });
     }
-    console.log(user);
-    res.send({ user });
   } catch (error) {
     next(error);
   }
 });
 
 userRouter.post("/login", async (req, res, next) => {
+  const { username, password } = req.body;
   try {
-    const { username, password } = req.body;
     const user = await getUserByUsername(username);
-
     const validPassword = await bcrypt.compare(password, user.password);
 
-    if (validPassword) {
+    if (!validPassword) {
+      next({
+        name: "UserError",
+        message: "Invalid credentials, please try again",
+      });
+    } else if (validPassword) {
       const token = jwt.sign(user, JWT_SECRET);
 
       res.cookie("token", token, {

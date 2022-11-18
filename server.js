@@ -18,7 +18,12 @@ server.use(cookieParser(COOKIE_SECRET));
 server.use("/routes", router);
 
 server.use((error, req, res, next) => {
-  res.send(500).send(err);
+  if (error.status) {
+    res.status(error.status);
+  } else {
+    res.status(500);
+  }
+  res.send({ success: false, message: error.message });
 });
 
 server.listen(4000, () => {
