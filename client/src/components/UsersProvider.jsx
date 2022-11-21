@@ -8,7 +8,7 @@ export default function UsersProviders({ children }) {
   useEffect(() => {
     async function getMe() {
       const user = await fetchMe();
-      console.log("user in UsersProvider component:", user);
+
       setUser(user);
       if (user.loggedIn === false) {
         setUser({ user: "Guest" });

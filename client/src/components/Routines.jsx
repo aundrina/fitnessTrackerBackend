@@ -24,7 +24,7 @@ function Routines() {
     RoutineMatches(routine, searchTerm)
   );
   const routinesToDisplay = searchTerm.length ? filteredRoutines : routines;
-
+  console.log(routines);
   return (
     <div className={styles.Routines}>
       <input

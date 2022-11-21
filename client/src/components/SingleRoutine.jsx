@@ -1,57 +1,35 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-  fetchRoutineById,
-  updateRoutine,
-  deleteRoutine,
-} from "../api/routines";
-import useAuth from "../context/UsersContext";
-import styles from "../styles/SingleRoutine.module.css";
+import { fetchRoutineById, deleteRoutine } from "../api/routines";
+import styles from "../styles/Routines.module.css";
+import useUsers from "../hooks/useUsers";
 
 function SingleRoutine() {
   const navigate = useNavigate();
-  const { user } = useAuth();
   const { routineId } = useParams();
-  console.log("The routineId is", routineId);
-  const [singleRoutine, setSingleRoutine] = useState({});
-  const [content, setContent] = useState();
+  const { users } = useUsers();
+  const [routine, setRoutine] = useState({});
 
   useEffect(() => {
     async function getSingleRoutine() {
       const getRoutine = await fetchRoutineById(routineId);
-      setSingleRoutine(getRoutine);
+      setRoutine(getRoutine);
     }
-
     getSingleRoutine();
   }, []);
+  console.log("routine", routine);
 
   return (
-    <div>
-      <div className={styles.singlepost}>
-        <h3 className={styles.title}>{singleRoutine.name}</h3>
-        <h4>{singleRoutine.goal}</h4>
-        {/* <h5>Activities {`singleRoutine.${activityId}`}</h5> */}
-        {user?._id === singleRoutine.creator_id && (
-          <button
-            onClick={async () => {
-              await deleteRoutine(singleRoutine._id);
-              navigate("/");
-            }}
-          >
-            Delete Routine
-          </button>
-        )}
+    <div className={styles.Routines}>
+      <div className={styles.head}>
+        <h1>
+          <b>Routine</b>
+        </h1>
       </div>
-      <div>
-        {user?._id === singleRoutine.creator_id && (
-          <button
-            onClick={async () => {
-              navigate(`/routes/routines/${routineId}`);
-            }}
-          >
-            Edit
-          </button>
-        )}
+      <div key={routine.id}>
+        <h3>Routine: {routine.name}</h3>
+        <h6>Goal: {routine.goal}</h6>
+        <h6>Creator: {routine.creatorName}</h6>
       </div>
     </div>
   );
